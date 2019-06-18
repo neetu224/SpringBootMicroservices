@@ -3,14 +3,14 @@ zuul:
   prefix: /api
   routes:
     book-catalog-service:
-      path: /rest/**
-      serviceId: BOOKCATALOGSERVICE
+      path: /catalog/**
+      serviceId: BOOK-CATALOG-SERVICE
     book-info-service:
       path: /info/**
-      serviceId: BOOKINFOSERVICE
+      serviceId: BOOK-INFO-SERVICE
     book-rating-service:
        path: /rating/**
-       serviceId: BOOKRATINGSERVICE
+       serviceId: BOOK-RATING-SERVICE
 
 eureka:
   client:

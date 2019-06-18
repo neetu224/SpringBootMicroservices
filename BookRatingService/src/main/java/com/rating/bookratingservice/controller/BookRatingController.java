@@ -10,7 +10,7 @@ import com.rating.bookratingservice.model.BookRating;
 import com.rating.bookratingservice.model.UserRating;
 
 @RestController
-@RequestMapping("/ratings")
+@RequestMapping("/bookRating")
 public class BookRatingController {
 
 @RequestMapping("/book/{bookId}")

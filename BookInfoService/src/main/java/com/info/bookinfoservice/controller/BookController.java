@@ -12,7 +12,7 @@ public class BookController {
 
 @RequestMapping("/{bookId}")
 public Book getBooks(@PathVariable("bookId") String bookId) {
-	Book book=new Book(bookId, "Alchemist", "Paulo coehleo");
+	Book book=new Book(bookId, "Alchemist", "Paulo cohleo");
 	return book;
 }
 	

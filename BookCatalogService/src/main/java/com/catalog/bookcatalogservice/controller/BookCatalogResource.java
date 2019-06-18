@@ -1,5 +1,6 @@
 package com.catalog.bookcatalogservice.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.catalog.bookcatalogservice.model.Book;
 import com.catalog.bookcatalogservice.model.BookCatalogItem;
 import com.catalog.bookcatalogservice.model.UserRating;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/bookcatalog")
@@ -19,19 +21,20 @@ public class BookCatalogResource {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@HystrixCommand(fallbackMethod = "fallback", groupKey = "Hello",
-	            commandKey = "hello",
-	            threadPoolKey = "helloThread"
+	@HystrixCommand(fallbackMethod = "fallback", groupKey = "catalog",
+	            commandKey = "catalog",
+	            threadPoolKey = "catalogThread"
 	            )
 	@RequestMapping("/user/{userId}")
 	public List<BookCatalogItem> getBookCatalog(@PathVariable("userId") String userId) {
-		UserRating userRating=restTemplate.getForObject("http://zuul-server/api/rating/ratings/user/" + userId, UserRating.class);
+		UserRating userRating=restTemplate.getForObject("http://zuul-server/api/rating/bookRating/user/" + userId, UserRating.class);
 		return userRating.getRatings().stream().map(rating-> {
-			Book book=restTemplate.getForObject("http://BookInfoService/books/"+rating.getBookId(), Book.class);
+			Book book=restTemplate.getForObject("http://book-info-service/books/"+rating.getBookId(), Book.class);
 		   return new BookCatalogItem(book.getBookId(), book.getBookName(), rating.getBookRating());
 		}).collect(Collectors.toList());
 	}
-	public String fallback(Throwable hystrixCommand) {
-        return "Fall Back Hello world";
+	
+	public List<BookCatalogItem> fallback(String id, Throwable hystrixCommand) {
+        return Arrays.asList(new BookCatalogItem("No Item", "Book Service is not available", 0));
     }
 }
